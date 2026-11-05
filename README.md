@@ -1,36 +1,60 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# §Clause — your expense policy, enforced (not interpreted)
 
-## Getting Started
+**Claude reads the policy once. Clause enforces it on every request — instantly, identically, with the clause cited. No AI inside.**
 
-First, run the development server:
+Finance teams write expense policies as PDFs nobody reads. Employees ask "can I expense this?" in Slack, managers answer inconsistently, and auditors can't reproduce why something was approved.
+
+Clause splits the job:
+
+| Claude (customer's own plan, via MCP) | Clause (this app, zero AI) |
+|---|---|
+| Reads the policy document | Stores the rules as versioned, deterministic logic |
+| Writes the rules + edge-case test cases | Runs the tests, diffs against what's live, **replays real past expenses** to show what would change |
+| Explains, summarises, suggests tweaks | Lets a human edit and publish |
+| | Gives every employee a link that answers instantly with the clause quoted |
+| | Tracks state Claude can't: monthly allowances per employee, approval queue, audit trail |
+
+## Try it
+
+- **Live app:** `<DEPLOY_URL>` → click **Open the live demo** (or log in with `demo@clause.dev` / `clause-demo`)
+- **Employee portal (no login):** `<DEPLOY_URL>/r/northwind`
+- **Sample policy to give Claude:** `<DEPLOY_URL>/sample-policy`
+
+### Connect Claude (60 seconds)
+
+1. claude.ai → **Settings → Connectors → Add custom connector**
+2. Name: `Clause` · URL: `<DEPLOY_URL>/api/mcp/ck_demo_northwind_7f3k` (demo workspace; every workspace gets its own on the *Connect Claude* page). No OAuth.
+3. In a chat, enable Clause from the tools menu, paste the sample policy, and say **"Set this up in Clause."**
+4. Watch the Policy page update live → review tests, diff and impact → edit a rule → **Publish**.
+5. Open the employee portal and submit an expense.
+
+Claude Code: `claude mcp add --transport http clause <DEPLOY_URL>/api/mcp/ck_demo_northwind_7f3k`
+
+### MCP tools
+
+| Tool | What it does |
+|---|---|
+| `get_workspace` | Company, enforced policy, pending draft, 30-day stats |
+| `propose_policy` | Save rules + tests as a **draft**. Returns validation errors, test results, diff vs live, and which real past requests would change, so Claude can fix its own mistakes |
+| `update_rule` / `remove_rule` | Small edits ("raise meals to $70") |
+| `check_spend` | "Would this be approved?" against the live policy or the draft |
+| `list_requests` | Real requests with decisions and cited clauses, for analysis |
+| `review_request` | Approve/reject on the admin's behalf, only when asked |
+
+Drafts are never enforced until a human publishes them.
+
+## How it works
+
+- `src/lib/engine.ts`: the rules engine. Pure functions: evaluate, validate (including a check that flags when a rule's limit no longer matches the policy text it quotes), run tests, diff. Same input + same version → same answer.
+- `src/lib/mcp.ts`: a dependency-free MCP server (Streamable HTTP, stateless JSON-RPC).
+- `src/lib/store.ts`: Postgres data layer: versions, requests, month-to-date ledger, events.
+- Next.js 16 App Router UI, Tailwind v4. Postgres (Neon) in production; embedded PGlite locally (no setup).
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+npm run dev        # http://localhost:3000, local DB auto-created and seeded
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Env (production): `DATABASE_URL` (Postgres), `SESSION_SECRET` (random string).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+**No OpenAI, Anthropic or other AI keys exist anywhere in this codebase.**

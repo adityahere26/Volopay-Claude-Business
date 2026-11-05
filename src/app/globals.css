@@ -1,26 +1,81 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  --color-paper: #f6f4ee;
+  --color-card: #ffffff;
+  --color-ink: #15140f;
+  --color-ink-2: #3a382f;
+  --color-muted: #6f6b5e;
+  --color-faint: #a29d8d;
+  --color-line: #e3dfd3;
+  --color-line-2: #efece4;
+  --color-mark: #9b2c1d;
+  --color-ok: #1d6b44;
+  --color-ok-bg: #e7f3ec;
+  --color-warn: #9a5b00;
+  --color-warn-bg: #fbf0dc;
+  --color-bad: #b42318;
+  --color-bad-bg: #fbe9e7;
+  --color-claude: #c15f3c;
+  --color-claude-bg: #f8ebe4;
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+  --font-serif: var(--font-serif-display), ui-serif, Georgia, serif;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+html {
+  color-scheme: light;
 }
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
 }
+::selection {
+  background: #f2d9a6;
+}
+
+@utility btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-md px-3.5 py-2 text-sm font-medium transition-colors disabled:opacity-50 disabled:pointer-events-none cursor-pointer;
+  }
+
+@utility btn-ink {
+    @apply btn bg-ink text-paper hover:bg-ink-2;
+  }
+
+@utility btn-line {
+    @apply btn border border-line bg-card text-ink hover:border-faint;
+  }
+
+@utility btn-ghost {
+    @apply btn text-muted hover:text-ink hover:bg-line-2;
+  }
+
+@utility card {
+    @apply rounded-xl border border-line bg-card;
+  }
+
+@utility input {
+    @apply w-full rounded-md border border-line bg-card px-3 py-2 text-sm text-ink placeholder:text-faint outline-none focus:border-ink focus:ring-2 focus:ring-ink/10;
+  }
+
+@utility label {
+    @apply block text-xs font-medium uppercase tracking-wider text-muted mb-1.5;
+  }
+
+@utility eyebrow {
+    @apply font-mono text-[11px] uppercase tracking-[0.14em] text-muted;
+  }
+
+@utility clause {
+    @apply font-mono text-mark font-medium;
+  }
+
+@utility pill {
+    @apply inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium whitespace-nowrap;
+  }
+
+@utility quote {
+    @apply font-serif text-[17px] leading-snug text-ink-2 border-l-2 border-mark/40 pl-3 italic;
+  }
