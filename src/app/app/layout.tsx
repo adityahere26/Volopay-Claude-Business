@@ -40,6 +40,9 @@ export default async function AppLayout({ children }: LayoutProps<"/app">) {
               <button className="btn-ghost w-full justify-start text-xs">↺ Reset demo data</button>
             </form>
           )}
+          {ws.is_demo && (
+            <p className="px-3 text-[11px] leading-snug text-faint">Demo data resets itself after 15 minutes of no activity.</p>
+          )}
           <form action={logout}>
             <button className="btn-ghost w-full justify-start text-xs">Sign out</button>
           </form>

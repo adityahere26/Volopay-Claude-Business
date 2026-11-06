@@ -9,6 +9,7 @@ import {
   checkSpend,
   createWorkspace,
   discardDraft,
+  freshenDemo,
   ensureDraft,
   getLogin,
   getWorkspaceBySlug,
@@ -28,12 +29,14 @@ export async function login(_: FormState, fd: FormData): Promise<FormState> {
   const pw = String(fd.get("password") ?? "");
   const row = await getLogin(email);
   if (!row || !verifyPassword(pw, row.password_hash)) return { error: "Email or password is incorrect." };
+  await freshenDemo(row.id);
   await setSession(row.id);
   redirect("/app");
 }
 
 export async function demoLogin() {
   await getLogin(DEMO.email); // ensures schema + seed
+  await freshenDemo(DEMO.workspaceId);
   await setSession(DEMO.workspaceId);
   redirect("/app");
 }
@@ -120,6 +123,7 @@ export async function resetDemoWorkspace() {
   const ws = await requireWorkspace();
   if (!ws.is_demo) return;
   await resetDemo(q);
+  await logEvent(ws.id, "system", "reset", "Demo data reset");
   revalidatePath("/app", "layout");
   redirect("/app");
 }

@@ -293,3 +293,18 @@ export async function onboarding(wsId: string) {
   }
   return { drafted, published, tried };
 }
+
+/**
+ * The public demo cleans itself: when someone arrives (web login or Claude connector)
+ * after a quiet period, it's restored to the pristine 2025 state. Active sessions are never wiped.
+ */
+export async function freshenDemo(wsId: string, idleMinutes = 15) {
+  const { DEMO, resetDemo } = await import("./seed");
+  if (wsId !== DEMO.workspaceId) return false;
+  const r = await q(`select max(created_at) as t from events where workspace_id=$1`, [wsId]);
+  const last = r[0]?.t ? new Date(r[0].t).getTime() : 0;
+  if (Date.now() - last < idleMinutes * 60000) return false;
+  await resetDemo(q);
+  await logEvent(wsId, "system", "reset", "Fresh demo — data restored automatically");
+  return true;
+}

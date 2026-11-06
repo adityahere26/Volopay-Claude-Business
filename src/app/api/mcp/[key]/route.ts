@@ -1,5 +1,5 @@
 import { handleMcp } from "@/lib/mcp";
-import { getWorkspaceByKey } from "@/lib/store";
+import { freshenDemo, getWorkspaceByKey } from "@/lib/store";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 30;
@@ -14,6 +14,7 @@ export async function POST(req: Request, ctx: RouteContext<"/api/mcp/[key]">) {
   const { key } = await ctx.params;
   const ws = await getWorkspaceByKey(key);
   if (!ws) return Response.json({ jsonrpc: "2.0", id: null, error: { code: -32001, message: "Unknown Clause connector key" } }, { status: 404, headers: CORS });
+  if (ws.is_demo) await freshenDemo(ws.id);
   const res = await handleMcp(req, ws);
   for (const [k, v] of Object.entries(CORS)) res.headers.set(k, v);
   return res;
