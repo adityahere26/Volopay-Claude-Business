@@ -43,15 +43,15 @@ export type FieldId = keyof typeof FIELDS;
 export const FIELD_IDS = Object.keys(FIELDS) as FieldId[];
 
 export const OPS = {
-  gt: ">",
-  gte: "≥",
-  lt: "<",
-  lte: "≤",
+  gt: "is over",
+  gte: "is at least",
+  lt: "is under",
+  lte: "is at most",
   eq: "is",
   neq: "is not",
   in: "is one of",
   not_in: "is not one of",
-  contains_any: "mentions any of",
+  contains_any: "mentions",
 } as const;
 export type Op = keyof typeof OPS;
 export const OPS_BY_TYPE: Record<FieldType, Op[]> = {

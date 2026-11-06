@@ -277,3 +277,19 @@ export async function stats(wsId: string) {
     blockedSpend: Number(s.blocked_spend ?? 0),
   };
 }
+
+/** Drives the "get started" checklist on the overview. */
+export async function onboarding(wsId: string) {
+  const [claude, pub] = await Promise.all([
+    q(`select count(*)::int as n from policy_versions where workspace_id=$1 and source='claude'`, [wsId]),
+    getPublished(wsId),
+  ]);
+  const drafted = Number(claude[0]?.n ?? 0) > 0;
+  const published = !!pub && pub.source === "claude";
+  let tried = false;
+  if (published && pub.published_at) {
+    const r = await q(`select count(*)::int as n from requests where workspace_id=$1 and created_at > $2`, [wsId, pub.published_at]);
+    tried = Number(r[0]?.n ?? 0) > 0;
+  }
+  return { drafted, published, tried };
+}

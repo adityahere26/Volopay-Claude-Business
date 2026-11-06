@@ -21,35 +21,103 @@ import { OutcomePill } from "./ui";
 type Change = { kind: "added" | "changed"; fields: string[] } | null;
 
 export function RuleRow({ rule, change, editable, currency, startOpen = false, onClosed }: { rule: Rule; change: Change; editable: boolean; currency: string; startOpen?: boolean; onClosed?: () => void }) {
-  const [open, setOpen] = useState(startOpen);
-  if (open) return <RuleEditor rule={rule} currency={currency} onClose={() => { setOpen(false); onClosed?.(); }} isNew={startOpen} />;
+  const [mode, setMode] = useState<"view" | "quick" | "full">(startOpen ? "full" : "view");
+  const close = () => { setMode("view"); onClosed?.(); };
+  if (mode === "full") return <RuleEditor rule={rule} currency={currency} onClose={close} isNew={startOpen} />;
+  if (mode === "quick") return <QuickEdit rule={rule} currency={currency} onClose={close} onMore={() => setMode("full")} />;
+  const scope = rule.categories.length ? rule.categories.map(categoryLabel).join(", ") : "Any expense";
   return (
-    <div className={`group relative px-5 py-4 ${change?.kind === "added" ? "bg-ok-bg/40" : change ? "bg-warn-bg/40" : ""}`}>
+    <div className="flex flex-wrap items-start gap-x-4 gap-y-2 px-5 py-4">
+      <span className="clause w-10 pt-0.5 text-sm">§{rule.clause || "—"}</span>
+      <div className="min-w-0 flex-1">
+        <p className="font-medium">
+          {rule.title}
+          {change?.kind === "added" && <span className="pill ml-2 bg-ok-bg text-ok">New</span>}
+          {change?.kind === "changed" && <span className="pill ml-2 bg-warn-bg text-warn">Changed</span>}
+        </p>
+        <p className="mt-0.5 text-sm text-ink-2">
+          <b className="font-medium text-ink">{scope}</b>
+          {rule.when.length ? <> — if {rule.when.map((c) => describeCondition(c, currency)).join(" and ")}</> : null}
+        </p>
+        {rule.quote && <p className="mt-1.5 text-xs text-muted">Policy says: “{rule.quote}”</p>}
+      </div>
+      <div className="flex items-center gap-2">
+        <OutcomePill outcome={rule.action} approver={rule.approver} />
+        {editable && <button onClick={() => setMode("quick")} className="btn-line py-1 text-xs">✎ Edit</button>}
+      </div>
+    </div>
+  );
+}
+
+type Outcome = "allow" | "manager" | "finance" | "cfo" | "block";
+const OUTCOMES: { v: Outcome; label: string }[] = [
+  { v: "allow", label: "Approve automatically" },
+  { v: "manager", label: "Needs Manager approval" },
+  { v: "finance", label: "Needs Finance approval" },
+  { v: "cfo", label: "Needs CFO approval" },
+  { v: "block", label: "Not allowed" },
+];
+const toOutcome = (r: Rule): Outcome => (r.action === "require_approval" ? (r.approver ?? "manager") : r.action);
+const escapeRe = (x: string) => x.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+/** Swap old numbers for new ones in the quoted text, so the policy wording keeps matching the rule. */
+function swapNumber(text: string, from: number, to: number) {
+  if (!text || from === to) return text;
+  let out = text;
+  for (const variant of [from.toLocaleString("en-US"), String(from)]) {
+    const re = new RegExp(`(^|[^\\d.,])(\\$?)${escapeRe(variant)}(?![\\d])`, "g");
+    out = out.replace(re, (_m, pre, dollar) => `${pre}${dollar}${variant.includes(",") ? to.toLocaleString("en-US") : to}`);
+  }
+  return out;
+}
+
+function QuickEdit({ rule, currency, onClose, onMore }: { rule: Rule; currency: string; onClose: () => void; onMore: () => void }) {
+  const numeric = rule.when.map((c, i) => ({ c, i })).filter(({ c }) => typeof c.value === "number");
+  const [values, setValues] = useState<Record<number, string>>(Object.fromEntries(numeric.map(({ c, i }) => [i, String(c.value)])));
+  const [outcome, setOutcome] = useState<Outcome>(toOutcome(rule));
+  const [pending, start] = useTransition();
+  const save = () =>
+    start(async () => {
+      let quote = rule.quote;
+      let message = rule.message;
+      const when = rule.when.map((c, i) => {
+        if (!(i in values)) return c;
+        const next = Number(values[i]);
+        if (isNaN(next)) return c;
+        quote = swapNumber(quote, c.value as number, next);
+        message = swapNumber(message, c.value as number, next);
+        return { ...c, value: next };
+      });
+      const action = outcome === "allow" || outcome === "block" ? outcome : "require_approval";
+      await saveRule({ ...rule, when, quote, message, action, approver: action === "require_approval" ? (outcome as Rule["approver"]) : null }, rule.id);
+      onClose();
+    });
+  return (
+    <div className="space-y-4 bg-brand-bg/40 px-5 py-5">
+      <p className="font-medium"><span className="clause mr-2">§{rule.clause}</span>{rule.title}</p>
+      {numeric.map(({ c, i }) => {
+        const f = FIELDS[c.field];
+        return (
+          <div key={i} className="flex flex-wrap items-center gap-3">
+            <span className="w-56 text-sm text-ink-2">If {f.label.toLowerCase()} {OPS[c.op]}</span>
+            <div className="relative w-40">
+              {f.type === "money" && <span className="pointer-events-none absolute top-2 left-3 text-sm text-muted">{currency === "USD" ? "$" : currency}</span>}
+              <input type="number" className={`input ${f.type === "money" ? "pl-7" : ""} text-base font-semibold`} value={values[i]} onChange={(e) => setValues({ ...values, [i]: e.target.value })} autoFocus={i === numeric[0].i} />
+            </div>
+          </div>
+        );
+      })}
+      <div className="flex flex-wrap items-center gap-3">
+        <span className="w-56 text-sm text-ink-2">Then</span>
+        <select className="input w-64" value={outcome} onChange={(e) => setOutcome(e.target.value as Outcome)}>
+          {OUTCOMES.map((o) => <option key={o.v} value={o.v}>{o.label}</option>)}
+        </select>
+      </div>
       <div className="flex flex-wrap items-center gap-2">
-        <span className="clause text-sm">§{rule.clause || "—"}</span>
-        <span className="font-medium">{rule.title}</span>
-        {change?.kind === "added" && <span className="pill bg-ok text-white">New</span>}
-        {change?.kind === "changed" && <span className="pill bg-warn text-white" title={change.fields.join(", ")}>Changed · {change.fields.filter((f) => f !== "quote").join(", ") || "wording"}</span>}
-        <span className="ml-auto flex items-center gap-2">
-          {editable && (
-            <button onClick={() => setOpen(true)} className="btn-line py-0.5 text-xs">
-              Edit
-            </button>
-          )}
-          <OutcomePill outcome={rule.action} approver={rule.approver} />
-        </span>
+        <button className="btn-ink" onClick={save} disabled={pending}>{pending ? "Saving…" : "Save"}</button>
+        <button className="btn-ghost" onClick={onClose} disabled={pending}>Cancel</button>
+        <button className="ml-auto text-sm text-muted underline hover:text-ink" onClick={onMore} disabled={pending}>More options</button>
       </div>
-      {rule.quote && <p className="quote mt-2.5">“{rule.quote}”</p>}
-      <div className="mt-3 flex flex-wrap items-center gap-1.5 font-mono text-[12px]">
-        <span className="rounded bg-line-2 px-2 py-1 text-ink-2">{rule.categories.length ? rule.categories.map(categoryLabel).join(" / ") : "Any category"}</span>
-        {rule.when.map((c, i) => (
-          <span key={i} className="rounded bg-line-2 px-2 py-1 text-ink-2">
-            {i === 0 ? "when " : "and "}
-            {describeCondition(c, currency)}
-          </span>
-        ))}
-      </div>
-      {rule.message && <p className="mt-2 text-sm text-muted">Employee sees: “{rule.message}”</p>}
     </div>
   );
 }

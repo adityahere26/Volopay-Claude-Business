@@ -1,17 +1,19 @@
 import Link from "next/link";
 import { requireWorkspace } from "@/lib/auth";
-import { getDraft, getPublished, listEvents, listRequests, stats } from "@/lib/store";
+import { getDraft, getPublished, listEvents, listRequests, onboarding, stats } from "@/lib/store";
+import { Checklist } from "@/components/Checklist";
 import { categoryLabel, money } from "@/lib/engine";
 import { ActorBadge, ClaudeMark, StatusPill, ago } from "@/components/ui";
 
 export default async function Overview() {
   const ws = await requireWorkspace();
-  const [s, pub, draft, events, pending] = await Promise.all([
+  const [s, pub, draft, events, pending, ob] = await Promise.all([
     stats(ws.id),
     getPublished(ws.id),
     getDraft(ws.id),
     listEvents(ws.id, 14),
     listRequests(ws.id, { status: "pending", limit: 5 }),
+    onboarding(ws.id),
   ]);
   const autoRate = s.total ? Math.round((s.autoApproved / s.total) * 100) : 0;
   const claudeConnected = events.some((e) => e.actor === "claude");
@@ -21,22 +23,9 @@ export default async function Overview() {
       <p className="eyebrow">Overview</p>
       <h1 className="mt-2 font-serif text-4xl">Good to see you, {ws.admin_name.split(" ")[0]}.</h1>
 
-      {draft && (
-        <Link href="/app/policy" className="mt-6 flex items-center gap-3 rounded-xl border border-claude/30 bg-claude-bg px-4 py-3 text-sm transition-colors hover:border-claude">
-          {draft.source === "claude" ? <ClaudeMark className="h-4 w-4 text-claude" /> : <span className="clause">§</span>}
-          <span>
-            <b>Draft v{draft.version}</b> {draft.source === "claude" ? "was proposed by Claude" : "is in progress"} — {draft.policy.rules.length} rules waiting for your review.
-          </span>
-          <span className="ml-auto font-medium">Review →</span>
-        </Link>
-      )}
-      {!pub && !draft && (
-        <Link href="/app/connect" className="mt-6 flex items-center gap-3 rounded-xl border border-line bg-card px-4 py-3 text-sm hover:border-ink">
-          <ClaudeMark className="h-4 w-4 text-claude" />
-          <span>No policy yet. Connect Claude and ask it to set up your expense policy.</span>
-          <span className="ml-auto font-medium">Connect →</span>
-        </Link>
-      )}
+      <div className="mt-6">
+        <Checklist {...ob} slug={ws.slug} hasDraft={!!draft} />
+      </div>
 
       <div className="mt-6 grid grid-cols-2 gap-3 lg:grid-cols-4">
         {[

@@ -46,14 +46,16 @@ export default async function RequestDetail({ params }: PageProps<"/app/requests
             </div>
           )}
           <section>
-            <h2 className="mb-2 font-medium">Why — cited from the policy</h2>
+            <h2 className="mb-2 font-medium">Why</h2>
             <div className="card p-5"><Reasons d={r.decision} /></div>
           </section>
-          <section>
-            <h2 className="mb-2 font-medium">Decision trace</h2>
-            <p className="mb-2 text-sm text-muted">Every rule Clause checked. Same input, same policy version → same answer, forever.</p>
-            <div className="card overflow-hidden"><Trace d={r.decision} /></div>
-          </section>
+          <details className="card group overflow-hidden">
+            <summary className="flex cursor-pointer items-center justify-between px-5 py-4 font-medium">
+              Show every rule Clause checked
+              <span className="text-sm text-muted group-open:hidden">Audit trail</span>
+            </summary>
+            <div className="border-t border-line"><Trace d={r.decision} /></div>
+          </details>
         </div>
         <aside className="card h-fit p-5">
           <p className="eyebrow">Request</p>
