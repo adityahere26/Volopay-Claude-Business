@@ -12,7 +12,7 @@ const g = globalThis as unknown as { __clauseQ?: Promise<Q>; __clauseReady?: Pro
 async function makeQ(): Promise<Q> {
   const url = process.env.DATABASE_URL || process.env.POSTGRES_URL;
   if (url) {
-    const sql = postgres(url, { ssl: url.includes("localhost") ? false : "require", prepare: false, max: 5, idle_timeout: 20 });
+    const sql = postgres(url, { ssl: url.includes("localhost") ? false : "require", prepare: false, max: 5, idle_timeout: 20, onnotice: () => {} });
     return async (text, params = []) => (await sql.unsafe(text, params as never[])) as unknown as Row[];
   }
   const { PGlite } = await import("@electric-sql/pglite");

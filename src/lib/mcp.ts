@@ -29,6 +29,8 @@ import {
   type Workspace,
 } from "./store";
 
+import { SAMPLE_POLICY_TEXT } from "./seed";
+
 const SUPPORTED_VERSIONS = ["2025-11-25", "2025-06-18", "2025-03-26", "2024-11-05"];
 
 const conditionSchema = {
@@ -90,6 +92,13 @@ const TOOLS = [
     name: "get_workspace",
     description:
       "Start here. Returns the company, the policy currently ENFORCED (published), any pending draft, 30-day stats, and the links for the finance admin. Call before drafting or editing rules.",
+    inputSchema: { type: "object", properties: {} },
+    annotations: { readOnlyHint: true },
+  },
+  {
+    name: "get_sample_policy",
+    description:
+      "Returns a realistic sample Travel & Expense policy document (Northwind Labs, 2026). Use it when the user wants to try Clause, asks for 'the sample policy', or has no policy document of their own. Then convert it with propose_policy.",
     inputSchema: { type: "object", properties: {} },
     annotations: { readOnlyHint: true },
   },
@@ -238,6 +247,8 @@ async function callTool(ctx: Ctx, name: string, args: Record<string, unknown>): 
         categories: CATEGORY_IDS,
       };
     }
+    case "get_sample_policy":
+      return { document: SAMPLE_POLICY_TEXT, next_step: "Convert this document into rules and tests with propose_policy." };
     case "propose_policy": {
       const rules = ((args.rules as Record<string, unknown>[]) ?? []).map(normalizeRule);
       const tests = ((args.tests as Record<string, unknown>[]) ?? []).map(normalizeTest);
