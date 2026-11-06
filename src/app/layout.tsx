@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
-import { Bricolage_Grotesque, Geist_Mono } from "next/font/google";
+import { Inter, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
-const bricolage = Bricolage_Grotesque({ variable: "--font-bricolage", subsets: ["latin"] });
+const inter = Inter({ variable: "--font-inter", subsets: ["latin"], axes: ["opsz"], display: "swap" });
 
 export const metadata: Metadata = {
   title: "Clause — your spend policy, enforced",
@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${bricolage.variable} ${geistMono.variable} h-full`}>
+    <html lang="en" className={`${inter.variable} ${geistMono.variable} h-full`}>
       <body className="min-h-full flex flex-col">{children}</body>
     </html>
   );

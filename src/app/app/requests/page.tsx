@@ -50,7 +50,7 @@ export default async function Requests({ searchParams }: PageProps<"/app/request
                 <td className="max-w-56 py-3 text-xs">
                   {r.decision.hits.length ? r.decision.hits.slice(0, 2).map((h) => <p key={h.rule_id} className="truncate"><span className="clause">§{h.clause}</span> {h.title}</p>) : <span className="text-faint">Within policy</span>}
                 </td>
-                <td className="py-3 text-right font-mono">{money(r.input.amount)}</td>
+                <td className="py-3 text-right font-semibold tabular">{money(r.input.amount)}</td>
                 <td className="px-5 py-3 text-right"><Link href={`/app/requests/${r.ref}`}><StatusPill status={r.status} auto={r.auto} /></Link></td>
               </tr>
             ))}

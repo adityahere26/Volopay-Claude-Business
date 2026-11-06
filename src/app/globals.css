@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 /* Visual language aligned with the Volopay product family:
-   Bricolage Grotesque, brand blue #4B4EFC, near-black ink, cool greys, white surfaces. */
+   brand blue #4B4EFC, near-black ink, cool greys, white surfaces. Type: Inter (optical sizing). */
 @theme {
   --color-paper: #f6f7fb;
   --color-card: #ffffff;
@@ -23,9 +23,9 @@
   --color-bad-bg: #fdecea;
   --color-claude: #c15f3c;
   --color-claude-bg: #fbeee8;
-  --font-sans: var(--font-bricolage), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, monospace;
-  --font-serif: var(--font-bricolage), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
 }
 
 html {
@@ -35,15 +35,30 @@ body {
   background: var(--color-paper);
   color: var(--color-ink);
   font-family: var(--font-sans);
+  font-size: 15px;
+  line-height: 1.55;
+  letter-spacing: -0.006em;
+  /* Inter's cleaner alternates: single-storey a, flat-top 3, straight l and 1 */
+  font-feature-settings: "cv01", "cv02", "cv03", "cv04", "cv05", "cv11";
+  font-optical-sizing: auto;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+table,
+dl,
+.font-mono,
+.tabular {
+  font-variant-numeric: tabular-nums;
 }
 ::selection {
   background: #dcdeff;
 }
-/* "Display" text: bold grotesque headings, Volopay-style */
+/* Headings: semibold Inter with tight tracking */
 .font-serif {
-  font-weight: 700;
-  letter-spacing: -0.025em;
+  font-weight: 600;
+  letter-spacing: -0.028em;
+  line-height: 1.1;
 }
 h1 em,
 h2 em {

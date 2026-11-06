@@ -147,7 +147,7 @@ export default function Home() {
               The thousands of checks in between cost what a database query costs.
             </p>
           </div>
-          <dl className="grid grid-cols-2 gap-4 self-center font-mono">
+          <dl className="tabular grid grid-cols-2 gap-4 self-center font-semibold tracking-tight">
             <div><dt className="text-xs text-white/50">AI cost to us</dt><dd className="text-3xl">$0</dd></div>
             <div><dt className="text-xs text-white/50">Per decision</dt><dd className="text-3xl">&lt;1 ms</dd></div>
             <div><dt className="text-xs text-white/50">Hosting / customer</dt><dd className="text-3xl">~$0.40</dd></div>

@@ -45,7 +45,7 @@ export function ExpenseForm({ slug }: { slug: string }) {
           <div className="relative">
             <label className="label">Amount (USD)</label>
             <span className="pointer-events-none absolute bottom-2 left-3 text-sm text-muted">$</span>
-            <input name="amount" type="number" step="0.01" min="0" className="input pl-7 font-mono" placeholder="0.00" required />
+            <input name="amount" type="number" step="0.01" min="0" className="input pl-7 tabular" placeholder="0.00" required />
           </div>
           <div><label className="label">Merchant</label><input name="merchant" className="input" placeholder="e.g. The Hoxton" /></div>
         </div>

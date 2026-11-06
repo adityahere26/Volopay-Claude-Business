@@ -22,7 +22,7 @@ export default async function AppLayout({ children }: LayoutProps<"/app">) {
           <span className="grid h-8 w-8 place-items-center rounded-full bg-brand-bg text-sm font-semibold text-brand">{ws.name[0]}</span>
           <div className="min-w-0">
             <p className="truncate text-sm font-semibold">{ws.name}</p>
-            <p className="truncate text-xs text-muted">{ws.admin_name} · Finance admin</p>
+            <p className="truncate text-xs text-muted">{ws.admin_name} · Admin</p>
           </div>
         </div>
         <nav className="flex flex-row flex-wrap gap-1 md:flex-col">

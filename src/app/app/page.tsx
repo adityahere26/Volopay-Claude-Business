@@ -66,7 +66,7 @@ export default async function Overview() {
                         {r.decision.hits.map((h) => `§${h.clause} ${h.title}`).join(" · ")}
                       </p>
                     </div>
-                    <span className="font-mono text-sm">{money(r.input.amount)}</span>
+                    <span className="tabular text-sm font-semibold">{money(r.input.amount)}</span>
                     <StatusPill status={r.status} />
                   </Link>
                 </li>
