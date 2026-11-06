@@ -129,10 +129,10 @@ export async function resetDemo(q: Q) {
   const publishedAt = new Date(Date.now() - 40 * 86400000);
   await q(
     `insert into policy_versions (id, workspace_id, version, status, source, policy, note, created_at, updated_at, published_at, published_by)
-     values ($1,$2,1,'published','human',$3::jsonb,$4,$5,$5,$5,$6)`,
+     values ($1,$2,1,'published','human',$3::text::jsonb,$4,$5,$5,$5,$6) on conflict (id) do nothing`,
     [`pv_${ws}_1`, ws, JSON.stringify(DEMO_POLICY_V1), "Imported from the 2025 handbook", publishedAt, DEMO.adminName],
   );
-  await q(`insert into events (id, workspace_id, actor, kind, detail, created_at) values ($1,$2,'admin','published','Published v1 — 2025 policy',$3)`, [
+  await q(`insert into events (id, workspace_id, actor, kind, detail, created_at) values ($1,$2,'admin','published','Published v1 — 2025 policy',$3) on conflict (id) do nothing`, [
     `ev_${ws}_seed`,
     ws,
     publishedAt,
@@ -161,7 +161,7 @@ export async function resetDemo(q: Q) {
     if (status !== "blocked" && status !== "rejected") mtd.set(key, prior + input.amount);
     await q(
       `insert into requests (id, workspace_id, ref, employee_name, employee_email, input, decision, policy_version, status, auto, reviewer, review_note, created_at, decided_at)
-       values ($1,$2,$3,$4,$5,$6::jsonb,$7::jsonb,1,$8,$9,$10,$11,$12,$13)`,
+       values ($1,$2,$3,$4,$5,$6::text::jsonb,$7::text::jsonb,1,$8,$9,$10,$11,$12,$13) on conflict (id) do nothing`,
       [`rq_${ws}_${n}`, ws, `EXP-${n}`, p.name, p.email, JSON.stringify(input), JSON.stringify(d), status, !reviewer, reviewer, note, created, decidedAt],
     );
     n++;

@@ -16,19 +16,19 @@ Clause splits the job:
 
 ## Try it
 
-- **Live app:** `<DEPLOY_URL>` → click **Open the live demo** (or log in with `demo@clause.dev` / `clause-demo`)
-- **Employee portal (no login):** `<DEPLOY_URL>/r/northwind`
-- **Sample policy to give Claude:** `<DEPLOY_URL>/sample-policy`
+- **Live app:** `https://clause-zeta.vercel.app` → click **Open the live demo** (or log in with `demo@clause.dev` / `clause-demo`)
+- **Employee portal (no login):** `https://clause-zeta.vercel.app/r/northwind`
+- **Sample policy to give Claude:** `https://clause-zeta.vercel.app/sample-policy`
 
 ### Connect Claude (60 seconds)
 
 1. claude.ai → **Settings → Connectors → Add custom connector**
-2. Name: `Clause` · URL: `<DEPLOY_URL>/api/mcp/ck_demo_northwind_7f3k` (demo workspace; every workspace gets its own on the *Connect Claude* page). No OAuth.
+2. Name: `Clause` · URL: `https://clause-zeta.vercel.app/api/mcp/ck_demo_northwind_7f3k` (demo workspace; every workspace gets its own on the *Connect Claude* page). No OAuth.
 3. In a chat, enable Clause from the tools menu, paste the sample policy, and say **"Set this up in Clause."**
 4. Watch the Policy page update live → review tests, diff and impact → edit a rule → **Publish**.
 5. Open the employee portal and submit an expense.
 
-Claude Code: `claude mcp add --transport http clause <DEPLOY_URL>/api/mcp/ck_demo_northwind_7f3k`
+Claude Code: `claude mcp add --transport http clause https://clause-zeta.vercel.app/api/mcp/ck_demo_northwind_7f3k`
 
 ### MCP tools
 

@@ -113,7 +113,7 @@ export async function saveDraft(wsId: string, policy: Policy, opts: { source: "c
   const draft = await getDraft(wsId);
   if (draft) {
     // A human touching Claude's draft makes it a joint draft; keep "claude" as origin unless human-only.
-    await q(`update policy_versions set policy=$2::jsonb, note=coalesce($3, note), updated_at=now(), source=$4 where id=$1`, [
+    await q(`update policy_versions set policy=$2::text::jsonb, note=coalesce($3, note), updated_at=now(), source=$4 where id=$1`, [
       draft.id,
       JSON.stringify(policy),
       opts.note ?? null,
@@ -125,7 +125,7 @@ export async function saveDraft(wsId: string, policy: Policy, opts: { source: "c
   const version = (max[0]?.v ?? 0) + 1;
   const id = newId("pv");
   await q(
-    `insert into policy_versions (id, workspace_id, version, status, source, policy, note) values ($1,$2,$3,'draft',$4,$5::jsonb,$6)`,
+    `insert into policy_versions (id, workspace_id, version, status, source, policy, note) values ($1,$2,$3,'draft',$4,$5::text::jsonb,$6)`,
     [id, wsId, version, opts.source, JSON.stringify(policy), opts.note ?? null],
   );
   return { id, version, created: true };
@@ -217,7 +217,7 @@ export async function submitRequest(wsId: string, emp: { name: string; email: st
   const ref = `EXP-${1001 + (n[0]?.n ?? 0)}`;
   await q(
     `insert into requests (id, workspace_id, ref, employee_name, employee_email, input, decision, policy_version, status, auto, decided_at)
-     values ($1,$2,$3,$4,$5,$6::jsonb,$7::jsonb,$8,$9,true,$10)`,
+     values ($1,$2,$3,$4,$5,$6::text::jsonb,$7::text::jsonb,$8,$9,true,$10)`,
     [newId("rq"), wsId, ref, emp.name.trim(), emp.email.trim().toLowerCase(), JSON.stringify(input), JSON.stringify(d), pub.version, status, status === "pending" ? null : new Date()],
   );
   await logEvent(wsId, "employee", "request", `${emp.name.trim()} submitted ${ref} — ${d.headline.toLowerCase()}`);
