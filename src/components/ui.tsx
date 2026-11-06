@@ -4,10 +4,9 @@ import { approverLabel } from "@/lib/engine";
 
 export function Logo({ href = "/", small = false }: { href?: string; small?: boolean }) {
   return (
-    <Link href={href} className="inline-flex items-baseline gap-1.5 text-ink">
-      <span className={`font-serif ${small ? "text-2xl" : "text-[28px]"} leading-none`}>
-        <span className="text-mark">§</span>Clause
-      </span>
+    <Link href={href} className="inline-flex items-center gap-2 text-ink">
+      <span className={`grid place-items-center rounded-full bg-ink font-bold text-white ${small ? "h-7 w-7 text-[15px]" : "h-8 w-8 text-base"}`}>§</span>
+      <span className={`font-bold tracking-tight ${small ? "text-xl" : "text-[22px]"}`}>clause</span>
     </Link>
   );
 }
@@ -39,7 +38,7 @@ export function ActorBadge({ actor }: { actor: string }) {
       </span>
     );
   const letter = actor === "admin" ? "A" : actor === "employee" ? "E" : "·";
-  const cls = actor === "admin" ? "bg-ink text-paper" : actor === "employee" ? "bg-line text-ink-2" : "bg-line-2 text-muted";
+  const cls = actor === "admin" ? "bg-brand text-white" : actor === "employee" ? "bg-line text-ink-2" : "bg-line-2 text-muted";
   return <span className={`grid h-6 w-6 shrink-0 place-items-center rounded-full text-[11px] font-semibold ${cls}`}>{letter}</span>;
 }
 

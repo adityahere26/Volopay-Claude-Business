@@ -40,12 +40,15 @@ export default async function Overview() {
 
       <div className="mt-6 grid grid-cols-2 gap-3 lg:grid-cols-4">
         {[
-          { k: "Decided automatically", v: `${autoRate}%`, d: `${s.autoApproved} of ${s.total} requests, 30 days` },
-          { k: "Waiting for approval", v: String(s.pending), d: "Routed by policy", href: "/app/requests" },
-          { k: "Approved spend", v: money(s.approvedSpend), d: "Last 30 days" },
-          { k: "Out-of-policy blocked", v: money(s.blockedSpend), d: `${s.blocked} request${s.blocked === 1 ? "" : "s"} stopped at the door` },
+          { k: "Decided automatically", v: `${autoRate}%`, d: `${s.autoApproved} of ${s.total} requests, 30 days`, tone: "bg-brand-bg text-brand", icon: "M13 2L3 14h7l-1 8 10-12h-7l1-8z" },
+          { k: "Waiting for approval", v: String(s.pending), d: "Routed by policy", tone: "bg-warn-bg text-warn", icon: "M12 2a10 10 0 100 20 10 10 0 000-20zm1 11h-4V7h2v4h2v2z" },
+          { k: "Approved spend", v: money(s.approvedSpend), d: "Last 30 days", tone: "bg-ok-bg text-ok", icon: "M9 16.2l-3.5-3.5L4 14.2l5 5 11-11-1.5-1.5L9 16.2z" },
+          { k: "Out-of-policy blocked", v: money(s.blockedSpend), d: `${s.blocked} request${s.blocked === 1 ? "" : "s"} stopped at the door`, tone: "bg-bad-bg text-bad", icon: "M12 2a10 10 0 100 20 10 10 0 000-20zM4 12a8 8 0 0112.9-6.3L5.7 16.9A7.9 7.9 0 014 12zm8 8a7.9 7.9 0 01-4.9-1.7L18.3 7.1A8 8 0 0112 20z" },
         ].map((c) => (
           <div key={c.k} className="card p-4">
+            <span className={`mb-3 grid h-9 w-9 place-items-center rounded-full ${c.tone}`}>
+              <svg viewBox="0 0 24 24" className="h-[18px] w-[18px]" fill="currentColor" aria-hidden><path d={c.icon} /></svg>
+            </span>
             <p className="text-xs text-muted">{c.k}</p>
             <p className="mt-1 font-serif text-3xl">{c.v}</p>
             <p className="mt-1 text-xs text-faint">{c.d}</p>

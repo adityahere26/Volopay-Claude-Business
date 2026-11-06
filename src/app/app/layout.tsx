@@ -13,21 +13,23 @@ export default async function AppLayout({ children }: LayoutProps<"/app">) {
   const [s, draft] = await Promise.all([stats(ws.id), getDraft(ws.id)]);
   return (
     <div className="flex min-h-screen flex-col md:flex-row">
-      <aside className="flex shrink-0 flex-col gap-6 border-b border-line px-4 py-5 md:sticky md:top-0 md:h-screen md:w-60 md:border-r md:border-b-0">
+      <aside className="flex shrink-0 flex-col gap-6 border-b border-line bg-white px-4 py-5 md:sticky md:top-0 md:h-screen md:w-64 md:border-r md:border-b-0">
         <div className="flex items-center justify-between">
           <Logo href="/app" small />
           <LiveRefresh />
         </div>
-        <div>
-          <p className="eyebrow">Workspace</p>
-          <p className="mt-1 font-medium">{ws.name}</p>
-          <p className="text-xs text-muted">{ws.admin_name} · Finance admin</p>
+        <div className="flex items-center gap-3 rounded-lg border border-line px-3 py-2.5">
+          <span className="grid h-8 w-8 place-items-center rounded-full bg-brand-bg text-sm font-semibold text-brand">{ws.name[0]}</span>
+          <div className="min-w-0">
+            <p className="truncate text-sm font-semibold">{ws.name}</p>
+            <p className="truncate text-xs text-muted">{ws.admin_name} · Finance admin</p>
+          </div>
         </div>
         <nav className="flex flex-row flex-wrap gap-1 md:flex-col">
-          <NavLink href="/app">Overview</NavLink>
-          <NavLink href="/app/policy" badge={draft ? "Draft" : null}>Policy</NavLink>
-          <NavLink href="/app/requests" badge={s.pending || null}>Approvals</NavLink>
-          <NavLink href="/app/connect">Connect Claude</NavLink>
+          <NavLink href="/app" icon="overview">Overview</NavLink>
+          <NavLink href="/app/policy" icon="policy" badge={draft ? "Draft" : null}>Policy</NavLink>
+          <NavLink href="/app/requests" icon="approvals" badge={s.pending || null}>Approvals</NavLink>
+          <NavLink href="/app/connect" icon="connect">Connect Claude</NavLink>
         </nav>
         <div className="mt-auto hidden space-y-2 md:block">
           <Link href={`/r/${ws.slug}`} target="_blank" className="btn-line w-full justify-between">

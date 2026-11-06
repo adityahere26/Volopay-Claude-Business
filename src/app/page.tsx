@@ -4,8 +4,8 @@ import { ClaudeMark, Logo } from "@/components/ui";
 
 export default function Home() {
   return (
-    <div className="flex flex-col">
-      <header className="mx-auto flex w-full max-w-6xl items-center justify-between px-5 py-5">
+    <div className="flex flex-col bg-white">
+      <header className="sticky top-0 z-10 border-b border-line bg-white/90 backdrop-blur"><div className="mx-auto flex w-full max-w-6xl items-center justify-between px-5 py-4">
         <Logo />
         <nav className="flex items-center gap-1 text-sm">
           <a href="#why" className="btn-ghost hidden sm:inline-flex">Why Clause</a>
@@ -15,13 +15,13 @@ export default function Home() {
             <button className="btn-ink">Live demo →</button>
           </form>
         </nav>
-      </header>
+      </div></header>
 
       {/* HERO */}
       <section className="mx-auto grid w-full max-w-6xl gap-12 px-5 pt-10 pb-20 lg:grid-cols-[1.05fr_1fr] lg:pt-16">
         <div>
           <p className="eyebrow">For finance teams at 20–500 person companies</p>
-          <h1 className="mt-5 font-serif text-[52px] leading-[0.98] tracking-tight sm:text-[68px]">
+          <h1 className="mt-5 font-serif text-[46px] leading-[1.05] sm:text-[60px]">
             Your expense policy, <em className="text-mark">enforced</em> — not interpreted.
           </h1>
           <p className="mt-6 max-w-xl text-lg leading-relaxed text-ink-2">
@@ -39,14 +39,14 @@ export default function Home() {
 
         {/* Flow visual */}
         <div className="relative">
-          <div className="card p-5 shadow-[0_1px_0_#e3dfd3,0_20px_40px_-24px_rgba(21,20,15,0.25)]">
+          <div className="card p-5 shadow-[0_24px_48px_-24px_rgba(75,78,252,0.35)]">
             <div className="flex items-center justify-between">
               <span className="eyebrow">Travel & Expense Policy.pdf</span>
               <span className="font-mono text-xs text-faint">p. 3</span>
             </div>
-            <p className="mt-3 font-serif text-[19px] leading-snug text-ink-2">
-              <span className="clause not-italic">4.1</span> Hotels are covered up to $250 per night.{" "}
-              <mark className="rounded bg-[#f2d9a6]/70 px-0.5 text-ink">In high-cost cities — New York, San Francisco, London, Singapore and Tokyo — the cap is $350 per night.</mark>{" "}
+            <p className="mt-3 text-[16px] leading-relaxed text-ink-2">
+              <span className="clause">4.1</span> Hotels are covered up to $250 per night.{" "}
+              <mark className="rounded bg-brand-bg px-0.5 text-ink">In high-cost cities — New York, San Francisco, London, Singapore and Tokyo — the cap is $350 per night.</mark>{" "}
               Anything above the cap needs manager approval.
             </p>
           </div>
@@ -84,7 +84,7 @@ export default function Home() {
       </section>
 
       {/* WHY */}
-      <section id="why" className="border-y border-line bg-card">
+      <section id="why" className="border-y border-line bg-paper">
         <div className="mx-auto max-w-6xl px-5 py-20">
           <p className="eyebrow">“Why not just ask Claude?”</p>
           <h2 className="mt-3 max-w-3xl font-serif text-[40px] leading-tight">
@@ -109,8 +109,8 @@ export default function Home() {
               },
             ].map((x) => (
               <div key={x.n}>
-                <span className="font-mono text-sm text-mark">{x.n}</span>
-                <h3 className="mt-2 text-lg font-semibold">{x.t}</h3>
+                <span className="grid h-9 w-9 place-items-center rounded-full bg-brand-bg text-sm font-semibold text-brand">{x.n}</span>
+                <h3 className="mt-4 text-lg font-semibold">{x.t}</h3>
                 <p className="mt-2 leading-relaxed text-ink-2">{x.d}</p>
               </div>
             ))}
@@ -138,26 +138,26 @@ export default function Home() {
           ))}
         </div>
 
-        <div className="mt-6 grid gap-6 rounded-xl bg-ink p-8 text-paper md:grid-cols-[1.3fr_1fr]">
+        <div className="mt-6 grid gap-6 rounded-xl bg-[linear-gradient(120deg,#4b4efc,#2a2cc0)] p-8 text-white md:grid-cols-[1.3fr_1fr]">
           <div>
-            <p className="font-mono text-xs uppercase tracking-[0.14em] text-paper/60">The economics</p>
+            <p className="font-mono text-xs uppercase tracking-[0.14em] text-white/60">The economics</p>
             <p className="mt-3 font-serif text-[34px] leading-tight">AI once. Rules forever.</p>
-            <p className="mt-3 max-w-lg text-paper/75">
+            <p className="mt-3 max-w-lg text-white/75">
               The expensive thinking happens a few times a year, when the policy changes — on the customer&apos;s own Claude plan.
               The thousands of checks in between cost what a database query costs.
             </p>
           </div>
           <dl className="grid grid-cols-2 gap-4 self-center font-mono">
-            <div><dt className="text-xs text-paper/50">AI cost to us</dt><dd className="text-3xl">$0</dd></div>
-            <div><dt className="text-xs text-paper/50">Per decision</dt><dd className="text-3xl">&lt;1 ms</dd></div>
-            <div><dt className="text-xs text-paper/50">Hosting / customer</dt><dd className="text-3xl">~$0.40</dd></div>
-            <div><dt className="text-xs text-paper/50">Gross margin</dt><dd className="text-3xl">97%</dd></div>
+            <div><dt className="text-xs text-white/50">AI cost to us</dt><dd className="text-3xl">$0</dd></div>
+            <div><dt className="text-xs text-white/50">Per decision</dt><dd className="text-3xl">&lt;1 ms</dd></div>
+            <div><dt className="text-xs text-white/50">Hosting / customer</dt><dd className="text-3xl">~$0.40</dd></div>
+            <div><dt className="text-xs text-white/50">Gross margin</dt><dd className="text-3xl">97%</dd></div>
           </dl>
         </div>
       </section>
 
       {/* PRICING */}
-      <section id="pricing" className="border-t border-line bg-card">
+      <section id="pricing" className="border-t border-line bg-paper">
         <div className="mx-auto grid max-w-6xl gap-10 px-5 py-20 md:grid-cols-[1fr_1.2fr]">
           <div>
             <p className="eyebrow">Pricing</p>
@@ -173,7 +173,7 @@ export default function Home() {
                 <li>Claude connector (MCP)</li><li>Employee portal</li><li>Approvals</li>
               </ul>
             </div>
-            <div className="card border-ink p-6">
+            <div className="card border-2 border-brand p-6">
               <p className="font-medium">Team</p>
               <p className="mt-2 font-serif text-4xl">$4<span className="text-lg text-muted"> / employee / mo</span></p>
               <p className="mt-1 text-sm text-muted">Minimum $49 / month</p>

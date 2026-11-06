@@ -71,7 +71,7 @@ export function ExpenseForm({ slug }: { slug: string }) {
             </div>
           )}
         </div>
-        <label className="flex items-center gap-2 text-sm"><input type="checkbox" name="has_receipt" defaultChecked className="h-4 w-4 accent-ink" /> I have a receipt</label>
+        <label className="flex items-center gap-2 text-sm"><input type="checkbox" name="has_receipt" defaultChecked className="h-4 w-4 accent-brand" /> I have a receipt</label>
         {state?.error && <p className="rounded-md bg-bad-bg px-3 py-2 text-sm text-bad">{state.error}</p>}
         <button className="btn-ink w-full py-2.5" disabled={submitting}>{submitting ? "Submitting…" : "Submit request"}</button>
       </div>

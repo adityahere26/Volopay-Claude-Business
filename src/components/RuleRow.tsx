@@ -86,7 +86,7 @@ function RuleEditor({ rule, currency, onClose, isNew }: { rule: Rule; currency: 
         <div><label className="label">Clause</label><input className="input font-mono" value={r.clause} onChange={(e) => set("clause", e.target.value)} /></div>
         <div><label className="label">Rule name</label><input className="input" value={r.title} onChange={(e) => set("title", e.target.value)} /></div>
       </div>
-      <div><label className="label">Policy text (quoted to employees)</label><textarea className="input font-serif text-base" rows={2} value={r.quote} onChange={(e) => set("quote", e.target.value)} /></div>
+      <div><label className="label">Policy text (quoted to employees)</label><textarea className="input text-sm" rows={2} value={r.quote} onChange={(e) => set("quote", e.target.value)} /></div>
 
       <div>
         <label className="label">Applies to</label>

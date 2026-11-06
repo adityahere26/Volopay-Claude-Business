@@ -11,7 +11,7 @@ export default function SamplePolicy() {
       </div>
       <p className="eyebrow mt-10">Sample document · paste into Claude with “Set this up in Clause”</p>
       <article className="card mt-3 p-8">
-        <pre className="font-serif text-[17px] leading-relaxed whitespace-pre-wrap text-ink-2">{SAMPLE_POLICY_TEXT}</pre>
+        <pre className="font-sans text-[15px] leading-relaxed whitespace-pre-wrap text-ink-2">{SAMPLE_POLICY_TEXT}</pre>
       </article>
     </main>
   );
