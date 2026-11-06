@@ -32,7 +32,7 @@ export function RuleRow({ rule, change, editable, currency, startOpen = false, o
         {change?.kind === "changed" && <span className="pill bg-warn text-white" title={change.fields.join(", ")}>Changed · {change.fields.filter((f) => f !== "quote").join(", ") || "wording"}</span>}
         <span className="ml-auto flex items-center gap-2">
           {editable && (
-            <button onClick={() => setOpen(true)} className="btn-line py-0.5 text-xs opacity-0 transition-opacity group-hover:opacity-100 focus:opacity-100">
+            <button onClick={() => setOpen(true)} className="btn-line py-0.5 text-xs">
               Edit
             </button>
           )}
