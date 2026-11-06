@@ -14,6 +14,8 @@ Clause splits the job:
 | | Gives every employee a link that answers instantly with the clause quoted |
 | | Tracks state Claude can't: monthly allowances per employee, approval queue, audit trail |
 
+📐 **[Architecture & implementation notes →](./ARCHITECTURE.md)**
+
 ## Try it
 
 - **Live app:** `https://clause-zeta.vercel.app` → click **Open the live demo** (or log in with `demo@clause.dev` / `clause-demo`)
